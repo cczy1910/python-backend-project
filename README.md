@@ -1,2 +1,2 @@
 # python-backend-project
-Homeworks for Backend course
+Домашние задания для курса "Разработка веб-сервисов"

@@ -12,7 +12,7 @@ def register(registerForm: RegisterForm):
     users[registerForm.id] = User(
         id=registerForm.id,
         username=registerForm.credentials.username,
-        password_hash=str(md5(bytearray(registerForm.credentials.username, 'utf-8')).hexdigest()),
+        password_hash=str(md5(bytearray(registerForm.credentials.password, 'utf-8')).hexdigest()),
         discount=None
     )
     DataAccess.dumpUsers(users)

@@ -1,5 +1,3 @@
-
-from os import times
 from unittest.mock import Mock, patch
 from unittest import TestCase
 

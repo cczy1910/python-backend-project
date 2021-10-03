@@ -1,13 +1,15 @@
-import app.data.data_access as data_access
-from typing import Optional
-from pydantic.main import BaseModel
-from app.models import Credentials, Item, RegisterForm
+from graphene import Schema
+from starlette.graphql import GraphQLApp
 from fastapi import FastAPI, Path, Response, status
 from fastapi.param_functions import Body, Query
 
+from app.models import Category, Credentials, Item, RegisterForm
+import app.data.data_access as DataAccess
+import app.categories as Categories
 import app.items as Items
 import app.discounts as Discounts
 import app.users as Users
+import app.graphql_schema as AppGraphQLSchema
 
 
 app = FastAPI()
@@ -15,7 +17,24 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup():
-    data_access.initialize()
+    DataAccess.initialize()
+
+app.add_route("/category/query", GraphQLApp(schema=Schema(query=AppGraphQLSchema.Query)))
+
+
+@app.get("/category/{categoryId}")
+async def get_category(response: Response, categoryId: int = Path(..., ge=1)):
+    category = Categories.getCategory(categoryId)
+    if category is None:
+        response.status_code = status.HTTP_404_NOT_FOUND
+    else:
+        return category
+
+
+@app.post("/category")
+async def add_category(response: Response, category: Category = Body(...)):
+    Categories.addCategory(category)
+    response.status_code = status.HTTP_200_OK
 
 
 @app.get("/item/{itemId}")
@@ -52,6 +71,7 @@ async def add_item(response: Response, registerForm: RegisterForm = Body(...)):
 async def add_item(response: Response, userId: int = Path(..., ge=1), discount: float = Query(..., gt=0, le=1)):
     Users.setDiscount(userId, discount)
     response.status_code = status.HTTP_200_OK
+
 
 @app.get("/user/{userId}")
 async def get_item(response: Response, userId: int = Path(..., ge=1)):

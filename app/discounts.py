@@ -17,5 +17,6 @@ def getDiscounted(credentilas: Credentials, itemId: int) -> Optional[Item]:
             id=item.id,
             name=item.name + " (Скидка)",
             description=item.description,
-            price=item.price * user.discount
+            price=item.price * user.discount,
+            category=item.category,
         )

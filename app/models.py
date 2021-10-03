@@ -15,6 +15,7 @@ class Item(BaseModel):
     name: str
     description: str
     price: float
+    category: Optional[int]
 
 
 class Credentials(BaseModel):
@@ -25,3 +26,8 @@ class Credentials(BaseModel):
 class RegisterForm(BaseModel):
     id: int
     credentials: Credentials
+
+class Category(BaseModel):
+    id: int
+    name: str
+    parent_id: Optional[int]
